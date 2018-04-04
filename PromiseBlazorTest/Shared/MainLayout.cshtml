@@ -1,0 +1,108 @@
+﻿@implements ILayoutComponent
+
+<div class='container-fluid'>
+    <div class='row'>
+        <div class='col-sm-3'>
+            <NavMenu />
+        </div>
+        <div class='col-sm-9'>
+            @Body
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    Blazor.registerFunction('runFunction', (callbackId, fnName, data) => {
+
+        let promise = window[fnName](data);
+
+        promise.then(value => {
+            const assemblyName = 'PromiseBlazorTest';
+            const namespace = 'PromiseBlazorTest';
+            const typeName = 'Callbacks';
+            const methodName = 'PromiseCallback';
+
+            const callbackMethod = Blazor.platform.findMethod(
+                assemblyName,
+                namespace,
+                typeName,
+                methodName
+            );
+            if (value === undefined) {
+                value = null;
+            }
+            const result = JSON.stringify(value);
+            Blazor.platform.callMethod(
+                callbackMethod,
+                null,
+                [
+                    Blazor.platform.toDotNetString(callbackId),
+                    Blazor.platform.toDotNetString(result)
+                ]
+            );
+        }).catch(reason => {
+            const assemblyName = 'PromiseBlazorTest';
+            const namespace = 'PromiseBlazorTest';
+            const typeName = 'Callbacks';
+            const methodName = 'PromiseError';
+
+            const callbackMethod = Blazor.platform.findMethod(
+                assemblyName,
+                namespace,
+                typeName,
+                methodName
+            );
+            const result = reason.toString();
+            Blazor.platform.callMethod(
+                callbackMethod,
+                null,
+                [
+                    Blazor.platform.toDotNetString(callbackId),
+                    Blazor.platform.toDotNetString(result)
+                ]
+            );
+        });
+
+        // Your function currently has to return something.
+        return true;
+    });
+
+    window.myPromiseFn = () => {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve("From JS!");
+            }, 1000);
+        });
+    }
+
+    window.errorPromiseFn = () => {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                reject("Error!");
+
+            }, 1000);
+        });
+    }
+
+    window.complexPromiseFn = () => {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve({ Name: 'Joonas' });
+            }, 1000);
+        });
+    }
+
+    window.paramPromiseFn = (data) => {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                console.dir(data);
+                resolve();
+            }, 1000);
+        });
+    };
+</script>
+
+@functions {
+    public RenderFragment Body { get; set; }
+}

@@ -1,0 +1,34 @@
+﻿@page "/promise"
+
+<h1>Promise test</h1>
+
+<p>Result: @result</p>
+
+<button @onclick(RunPromise)>Click me</button>
+
+@functions {
+    private string result = "";
+
+    async void RunPromise()
+    {
+        result = await Callbacks.RunPromiseAsync<string>("myPromiseFn");
+        StateHasChanged();
+
+        try
+        {
+            result = await Callbacks.RunPromiseAsync<string>("errorPromiseFn");
+            StateHasChanged();
+        }
+        catch(Exception e)
+        {
+            Console.WriteLine(e.Message);
+        }
+
+        GreetingModel model = await Callbacks.RunPromiseAsync<GreetingModel>("complexPromiseFn");
+        result = "Hello " + model.Name + "!";
+        StateHasChanged();
+
+        await Callbacks.RunPromiseAsync<string>("paramPromiseFn", new GreetingModel { Name = "JS" });
+        Console.WriteLine("Done");
+    }
+}
