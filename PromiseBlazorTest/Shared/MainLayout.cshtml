@@ -13,22 +13,30 @@
 
 
 <script type="text/javascript">
+    const assemblyName = 'PromiseBlazorTest';
+    const namespace = 'PromiseBlazorTest';
+    const typeName = 'Promises';
+    const methodName = 'PromiseCallback';
+
+    const callbackMethod = Blazor.platform.findMethod(
+        assemblyName,
+        namespace,
+        typeName,
+        methodName
+    );
+    const errorMethodName = 'PromiseError';
+
+    const errorCallbackMethod = Blazor.platform.findMethod(
+        assemblyName,
+        namespace,
+        typeName,
+        errorMethodName
+    );
     Blazor.registerFunction('runFunction', (callbackId, fnName, data) => {
 
         let promise = window[fnName](data);
 
         promise.then(value => {
-            const assemblyName = 'PromiseBlazorTest';
-            const namespace = 'PromiseBlazorTest';
-            const typeName = 'Callbacks';
-            const methodName = 'PromiseCallback';
-
-            const callbackMethod = Blazor.platform.findMethod(
-                assemblyName,
-                namespace,
-                typeName,
-                methodName
-            );
             if (value === undefined) {
                 value = null;
             }
@@ -42,20 +50,12 @@
                 ]
             );
         }).catch(reason => {
-            const assemblyName = 'PromiseBlazorTest';
-            const namespace = 'PromiseBlazorTest';
-            const typeName = 'Callbacks';
-            const methodName = 'PromiseError';
-
-            const callbackMethod = Blazor.platform.findMethod(
-                assemblyName,
-                namespace,
-                typeName,
-                methodName
-            );
+            if (!reason) {
+                reason = "Something went wrong";
+            }
             const result = reason.toString();
             Blazor.platform.callMethod(
-                callbackMethod,
+                errorCallbackMethod,
                 null,
                 [
                     Blazor.platform.toDotNetString(callbackId),

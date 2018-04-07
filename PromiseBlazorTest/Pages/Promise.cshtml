@@ -1,4 +1,4 @@
-﻿@page "/promise"
+﻿@page "/"
 
 <h1>Promise test</h1>
 
@@ -6,17 +6,19 @@
 
 <button @onclick(RunPromise)>Click me</button>
 
+<p>Open the F12 tools and check the Console for more output</p>
+
 @functions {
     private string result = "";
 
     async void RunPromise()
     {
-        result = await Callbacks.RunPromiseAsync<string>("myPromiseFn");
+        result = await Promises.ExecuteAsync<string>("myPromiseFn");
         StateHasChanged();
 
         try
         {
-            result = await Callbacks.RunPromiseAsync<string>("errorPromiseFn");
+            result = await Promises.ExecuteAsync<string>("errorPromiseFn");
             StateHasChanged();
         }
         catch(Exception e)
@@ -24,11 +26,11 @@
             Console.WriteLine(e.Message);
         }
 
-        GreetingModel model = await Callbacks.RunPromiseAsync<GreetingModel>("complexPromiseFn");
+        GreetingModel model = await Promises.ExecuteAsync<GreetingModel>("complexPromiseFn");
         result = "Hello " + model.Name + "!";
         StateHasChanged();
 
-        await Callbacks.RunPromiseAsync<string>("paramPromiseFn", new GreetingModel { Name = "JS" });
+        await Promises.ExecuteAsync<string>("paramPromiseFn", new GreetingModel { Name = "JS" });
         Console.WriteLine("Done");
     }
 }
