@@ -1,15 +1,16 @@
-﻿using Microsoft.AspNetCore.Blazor.Browser.Interop;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
+using Microsoft.JSInterop;
 
 namespace PromiseBlazorTest
 {
     public static class Promises
     {
-        private static ConcurrentDictionary<string, IPromiseCallbackHandler> CallbackHandlers =
+        private static readonly ConcurrentDictionary<string, IPromiseCallbackHandler> CallbackHandlers =
             new ConcurrentDictionary<string, IPromiseCallbackHandler>();
 
+        [JSInvokable]
         public static void PromiseCallback(string callbackId, string result)
         {
             if(CallbackHandlers.TryGetValue(callbackId, out IPromiseCallbackHandler handler))
@@ -19,6 +20,7 @@ namespace PromiseBlazorTest
             }
         }
 
+        [JSInvokable]
         public static void PromiseError(string callbackId, string error)
         {
             if (CallbackHandlers.TryGetValue(callbackId, out IPromiseCallbackHandler handler))
@@ -37,11 +39,11 @@ namespace PromiseBlazorTest
             {
                 if (data == null)
                 {
-                    RegisteredFunction.Invoke<bool>("runFunction", callbackId, fnName);
+                    JSRuntime.Current.InvokeAsync<bool>("runFunction", callbackId, fnName);
                 }
                 else
                 {
-                    RegisteredFunction.Invoke<bool>("runFunction", callbackId, fnName, data);
+                    JSRuntime.Current.InvokeAsync<bool>("runFunction", callbackId, fnName, data);
                 }
 
                 return tcs.Task;

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Blazor.Browser.Rendering;
 using Microsoft.AspNetCore.Blazor.Browser.Services;
 using System;
+using Microsoft.AspNetCore.Blazor.Hosting;
 
 namespace PromiseBlazorTest
 {
@@ -8,12 +9,12 @@ namespace PromiseBlazorTest
     {
         static void Main(string[] args)
         {
-            var serviceProvider = new BrowserServiceProvider(configure =>
-            {
-                // Add any custom services here
-            });
-
-            new BrowserRenderer(serviceProvider).AddComponent<App>("app");
+          CreateHostBuilder(args).Build().Run();
         }
+        public static IWebAssemblyHostBuilder CreateHostBuilder(string[] args) =>
+            BlazorWebAssemblyHost.CreateDefaultBuilder()
+                .UseBlazorStartup<Startup>();
     }
 }
+
+

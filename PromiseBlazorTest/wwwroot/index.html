@@ -11,6 +11,68 @@
     <app>Loading...</app>
 
     <script src="css/bootstrap/bootstrap-native.min.js"></script>
-    <script type="blazor-boot"></script>
+<script src="_framework/blazor.webassembly.js"></script>
+
+<script type="text/javascript">
+    const assemblyName = 'PromiseBlazorTest';
+    const methodName = 'PromiseCallback';
+    const errorMethodName = 'PromiseError';
+
+
+    window.runFunction = (callbackId, fnName, data) => {
+
+        let promise = window[fnName](data);
+
+        promise.then(value => {
+            if (value === undefined) {
+                value = null;
+            }
+            const result = JSON.stringify(value);
+            DotNet.invokeMethodAsync(assemblyName, methodName, callbackId, result);
+        }).catch(reason => {
+            if (!reason) {
+                reason = "Something went wrong";
+            }
+            const result = reason.toString();
+            DotNet.invokeMethodAsync(assemblyName, errorMethodName, callbackId, result);
+        });
+
+        // Your function currently has to return something.
+        return true;
+    };
+
+    window.myPromiseFn = () => {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve("From JS!");
+            }, 1000);
+        });
+    }
+
+    window.errorPromiseFn = () => {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                reject("Error!");
+            }, 1000);
+        });
+    }
+
+    window.complexPromiseFn = () => {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve({ Name: 'Joonas' });
+            }, 1000);
+        });
+    }
+
+    window.paramPromiseFn = (data) => {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                console.dir(data);
+                resolve();
+            }, 1000);
+        });
+    };
+</script>
 </body>
 </html>
