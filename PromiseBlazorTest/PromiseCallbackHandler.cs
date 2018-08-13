@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Blazor;
-using System;
+﻿using System;
 using System.Threading.Tasks;
 
 namespace PromiseBlazorTest
@@ -15,7 +14,7 @@ namespace PromiseBlazorTest
 
         public void SetResult(string json)
         {
-            TResult result = JsonUtil.Deserialize<TResult>(json);
+            TResult result = Microsoft.JSInterop.Json.Deserialize<TResult>(json);
             _tcs.SetResult(result);
         }
 

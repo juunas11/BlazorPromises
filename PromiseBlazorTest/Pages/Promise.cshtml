@@ -1,10 +1,12 @@
-﻿@page "/"
+﻿@using PromiseBlazorTest
+@page "/"
 
 <h1>Promise test</h1>
 
 <p>Result: @result</p>
 
-<button @onclick(RunPromise)>Click me</button>
+<button onclick="@RunPromise">Click me</button>
+
 
 <p>Open the F12 tools and check the Console for more output</p>
 
@@ -15,11 +17,12 @@
     {
         result = await Promises.ExecuteAsync<string>("myPromiseFn");
         StateHasChanged();
+        
 
         try
         {
             result = await Promises.ExecuteAsync<string>("errorPromiseFn");
-            StateHasChanged();
+            
         }
         catch(Exception e)
         {
@@ -30,7 +33,8 @@
         result = "Hello " + model.Name + "!";
         StateHasChanged();
 
-        await Promises.ExecuteAsync<string>("paramPromiseFn", new GreetingModel { Name = "JS" });
+        await Promises.ExecuteAsync<string>("paramPromiseFn", new GreetingModel { Name = "test" });
         Console.WriteLine("Done");
+
     }
 }
