@@ -13,7 +13,7 @@ namespace PromiseBlazorTest
         [JSInvokable]
         public static void PromiseCallback(string callbackId, string result)
         {
-            if(CallbackHandlers.TryGetValue(callbackId, out IPromiseCallbackHandler handler))
+            if (CallbackHandlers.TryGetValue(callbackId, out IPromiseCallbackHandler handler))
             {
                 handler.SetResult(result);
                 CallbackHandlers.TryRemove(callbackId, out IPromiseCallbackHandler _);
@@ -35,7 +35,7 @@ namespace PromiseBlazorTest
             var tcs = new TaskCompletionSource<TResult>();
             
             string callbackId = Guid.NewGuid().ToString();
-            if(CallbackHandlers.TryAdd(callbackId, new PromiseCallbackHandler<TResult>(tcs)))
+            if (CallbackHandlers.TryAdd(callbackId, new PromiseCallbackHandler<TResult>(tcs)))
             {
                 if (data == null)
                 {
@@ -48,6 +48,7 @@ namespace PromiseBlazorTest
 
                 return tcs.Task;
             }
+
             throw new Exception("An entry with the same callback id already existed, really should never happen");
         }
     }

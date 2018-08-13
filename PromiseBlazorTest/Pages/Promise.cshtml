@@ -7,7 +7,6 @@
 
 <button onclick="@RunPromise">Click me</button>
 
-
 <p>Open the F12 tools and check the Console for more output</p>
 
 @functions {
@@ -17,12 +16,10 @@
     {
         result = await Promises.ExecuteAsync<string>("myPromiseFn");
         StateHasChanged();
-        
 
         try
         {
             result = await Promises.ExecuteAsync<string>("errorPromiseFn");
-            
         }
         catch(Exception e)
         {
@@ -35,6 +32,5 @@
 
         await Promises.ExecuteAsync<string>("paramPromiseFn", new GreetingModel { Name = "test" });
         Console.WriteLine("Done");
-
     }
 }

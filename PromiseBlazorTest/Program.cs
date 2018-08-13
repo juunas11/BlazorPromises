@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Blazor.Browser.Rendering;
-using Microsoft.AspNetCore.Blazor.Browser.Services;
-using System;
-using Microsoft.AspNetCore.Blazor.Hosting;
+﻿using Microsoft.AspNetCore.Blazor.Hosting;
 
 namespace PromiseBlazorTest
 {
@@ -11,6 +8,7 @@ namespace PromiseBlazorTest
         {
           CreateHostBuilder(args).Build().Run();
         }
+
         public static IWebAssemblyHostBuilder CreateHostBuilder(string[] args) =>
             BlazorWebAssemblyHost.CreateDefaultBuilder()
                 .UseBlazorStartup<Startup>();
